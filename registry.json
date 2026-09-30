@@ -574,7 +574,15 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/deals/dealValueBands.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/deals/dealUtils.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/deals/dealLeadQualities.ts",
           "type": "registry:component"
         },
         {

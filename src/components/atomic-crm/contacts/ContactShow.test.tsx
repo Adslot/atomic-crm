@@ -75,4 +75,24 @@ describe("ContactShow", () => {
 
     await expect.element(screen.getByRole("combobox")).toHaveTextContent("Hot");
   });
+
+  it("shows the contact postcode and region in the aside", async () => {
+    // Arrange
+    mockIsMobile.mockReturnValue(false);
+    const contact = buildContact({ postcode: "2000", region: "NSW" });
+
+    // Act
+    const screen = await render(
+      <StoryWrapper data={{ contacts: [contact] }}>
+        <ResourceContextProvider value="contacts">
+          <ShowBase id={contact.id}>
+            <ContactAside />
+          </ShowBase>
+        </ResourceContextProvider>
+      </StoryWrapper>,
+    );
+
+    // Assert
+    await expect.element(screen.getByText("2000 NSW")).toBeVisible();
+  });
 });

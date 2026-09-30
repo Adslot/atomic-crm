@@ -417,6 +417,8 @@ BEGIN
     email_jsonb = merged_emails,
     phone_jsonb = merged_phones,
     linkedin_url = COALESCE(winner_contact.linkedin_url, loser_contact.linkedin_url),
+    postcode = COALESCE(winner_contact.postcode, loser_contact.postcode),
+    region = COALESCE(winner_contact.region, loser_contact.region),
     background = COALESCE(winner_contact.background, loser_contact.background),
     has_newsletter = COALESCE(winner_contact.has_newsletter, loser_contact.has_newsletter),
     first_seen = LEAST(COALESCE(winner_contact.first_seen, loser_contact.first_seen), COALESCE(loser_contact.first_seen, winner_contact.first_seen)),

@@ -2,6 +2,18 @@ import { Mars, NonBinary, Venus } from "lucide-react";
 
 import type { Company, Contact, ContactGender } from "../types";
 
+export const contactRegions = [
+  "NSW",
+  "ACT",
+  "QLD",
+  "VIC",
+  "SA",
+  "TAS",
+  "WA",
+  "NT",
+  "NZ",
+].map((region) => ({ id: region, name: region }));
+
 export const defaultEmailJsonb = [{ email: null, type: null }];
 export const defaultPhoneJsonb = [{ number: null, type: null }];
 
@@ -153,6 +165,11 @@ export function exportToVCard(
   // LinkedIn URL
   if (contact.linkedin_url) {
     lines.push(`URL:${contact.linkedin_url}`);
+  }
+
+  // Region and postcode (ADR fields: PO box;extended;street;locality;region;postal code;country)
+  if (contact.region || contact.postcode) {
+    lines.push(`ADR:;;;;${contact.region ?? ""};${contact.postcode ?? ""};`);
   }
 
   // Background/Note

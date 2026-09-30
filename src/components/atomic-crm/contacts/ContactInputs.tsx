@@ -25,6 +25,7 @@ import { Avatar } from "./Avatar";
 import { AutocompleteCompanyInput } from "../companies/AutocompleteCompanyInput.tsx";
 import {
   contactGender,
+  contactRegions,
   translateContactGenderLabel,
   translatePersonalInfoTypeLabel,
 } from "./contactModel.ts";
@@ -199,6 +200,12 @@ const ContactPersonalInformationInputs = () => {
         source="linkedin_url"
         helperText={false}
         validate={isLinkedinUrl}
+      />
+      <TextInput source="postcode" helperText={false} />
+      <SelectInput
+        source="region"
+        choices={contactRegions}
+        helperText={false}
       />
     </div>
   );

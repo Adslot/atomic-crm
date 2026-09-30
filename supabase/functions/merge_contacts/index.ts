@@ -62,6 +62,8 @@ function mergeContactData(winner: Contact, loser: Contact) {
     email_jsonb: JSON.stringify(mergedEmails) as any,
     phone_jsonb: JSON.stringify(mergedPhones) as any,
     linkedin_url: winner.linkedin_url || loser.linkedin_url,
+    postcode: winner.postcode || loser.postcode,
+    region: winner.region || loser.region,
     background: winner.background ?? loser.background,
     has_newsletter: winner.has_newsletter ?? loser.has_newsletter,
     first_seen: winner.first_seen ?? loser.first_seen,

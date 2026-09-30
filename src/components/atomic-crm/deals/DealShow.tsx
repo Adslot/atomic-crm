@@ -12,6 +12,7 @@ import {
   useTranslate,
   useUpdate,
 } from "ra-core";
+import { DateField } from "@/components/admin/date-field";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { EditButton } from "@/components/admin/edit-button";
 import { ReferenceArrayField } from "@/components/admin/reference-array-field";
@@ -27,7 +28,13 @@ import { NotesIterator } from "../notes/NotesIterator";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Deal } from "../types";
 import { ContactList } from "./ContactList";
-import { findDealLabel, formatISODateString } from "./dealUtils";
+import {
+  findDealLabel,
+  formatDealAmount,
+  formatISODateString,
+} from "./dealUtils";
+import { dealValueBands } from "./dealValueBands";
+import { dealLeadQualities } from "./dealLeadQualities";
 
 export const DealShow = ({ open, id }: { open: boolean; id?: string }) => {
   const redirect = useRedirect();
@@ -88,36 +95,46 @@ const DealShowContent = () => {
           <div className="flex gap-8 m-4">
             <div className="flex flex-col mr-10">
               <span className="text-xs text-muted-foreground tracking-wide">
-                {translate("resources.deals.fields.expected_closing_date")}
+                {translate("resources.deals.fields.created_at")}
               </span>
-              <div className="flex items-center gap-2">
-                <span className="text-sm">
-                  {isValid(new Date(record.expected_closing_date))
-                    ? formatISODateString(record.expected_closing_date)
-                    : translate("resources.deals.invalid_date")}
-                </span>
-                {new Date(record.expected_closing_date) < new Date() ? (
-                  <Badge variant="destructive">
-                    {translate("crm.common.past")}
-                  </Badge>
-                ) : null}
-              </div>
+              <DateField
+                source="created_at"
+                showTime
+                options={{ dateStyle: "medium", timeStyle: "short" }}
+                className="text-sm"
+              />
             </div>
 
-            <div className="flex flex-col mr-10">
-              <span className="text-xs text-muted-foreground tracking-wide">
-                {translate("resources.deals.fields.amount")}
-              </span>
-              <span className="text-sm">
-                {record.amount.toLocaleString("en-US", {
-                  notation: "compact",
-                  style: "currency",
-                  currency,
-                  currencyDisplay: "narrowSymbol",
-                  minimumSignificantDigits: 3,
-                })}
-              </span>
-            </div>
+            {record.expected_closing_date && (
+              <div className="flex flex-col mr-10">
+                <span className="text-xs text-muted-foreground tracking-wide">
+                  {translate("resources.deals.fields.expected_closing_date")}
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">
+                    {isValid(new Date(record.expected_closing_date))
+                      ? formatISODateString(record.expected_closing_date)
+                      : translate("resources.deals.invalid_date")}
+                  </span>
+                  {new Date(record.expected_closing_date) < new Date() ? (
+                    <Badge variant="destructive">
+                      {translate("crm.common.past")}
+                    </Badge>
+                  ) : null}
+                </div>
+              </div>
+            )}
+
+            {record.amount != null && (
+              <div className="flex flex-col mr-10">
+                <span className="text-xs text-muted-foreground tracking-wide">
+                  {translate("resources.deals.fields.amount")}
+                </span>
+                <span className="text-sm">
+                  {formatDealAmount(record.amount, currency)}
+                </span>
+              </div>
+            )}
 
             {record.category && (
               <div className="flex flex-col mr-10">
@@ -139,6 +156,48 @@ const DealShowContent = () => {
                 {findDealLabel(dealStages, record.stage)}
               </span>
             </div>
+
+            {record.business_identifier && (
+              <div className="flex flex-col mr-10">
+                <span className="text-xs text-muted-foreground tracking-wide">
+                  {translate("resources.deals.fields.business_identifier")}
+                </span>
+                <span className="text-sm">{record.business_identifier}</span>
+              </div>
+            )}
+
+            {record.enquiry_type && (
+              <div className="flex flex-col mr-10">
+                <span className="text-xs text-muted-foreground tracking-wide">
+                  {translate("resources.deals.fields.enquiry_type")}
+                </span>
+                <span className="text-sm">{record.enquiry_type}</span>
+              </div>
+            )}
+
+            {record.value_band && (
+              <div className="flex flex-col mr-10">
+                <span className="text-xs text-muted-foreground tracking-wide">
+                  {translate("resources.deals.fields.value_band")}
+                </span>
+                <span className="text-sm">
+                  {findDealLabel(dealValueBands, record.value_band) ??
+                    record.value_band}
+                </span>
+              </div>
+            )}
+
+            {record.lead_quality && (
+              <div className="flex flex-col mr-10">
+                <span className="text-xs text-muted-foreground tracking-wide">
+                  {translate("resources.deals.fields.lead_quality")}
+                </span>
+                <span className="text-sm">
+                  {findDealLabel(dealLeadQualities, record.lead_quality) ??
+                    record.lead_quality}
+                </span>
+              </div>
+            )}
           </div>
 
           {!!record.contact_ids?.length && (

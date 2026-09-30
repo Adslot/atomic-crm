@@ -145,6 +145,36 @@ describe("ContactEdit", () => {
         }),
       );
     });
+
+    it("saves the postcode and region entered in the form", async () => {
+      // Arrange
+      const updateMock = vi.fn().mockResolvedValue({ data: {} });
+      const screen = await render(
+        <ContactEditBasic silent dataProvider={{ update: updateMock }} />,
+      );
+
+      // Act
+      const postcodeInput = screen.getByLabelText("Postcode");
+      await expect.element(postcodeInput).toBeInTheDocument();
+      await postcodeInput.fill("2000");
+      await screen.getByRole("combobox", { name: "Region" }).click();
+      await screen.getByRole("option", { name: "NSW" }).click();
+      await screen.getByRole("button", { name: /^save$/i }).click();
+      await expect
+        .poll(() => screen.getByText("Element updated"))
+        .toBeInTheDocument();
+      // Closing the undoable toast commits the update
+      await screen.getByLabelText("Close toast").click();
+
+      // Assert
+      await expect.poll(() => updateMock.mock.calls.length).toBe(1);
+      expect(updateMock).toBeCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          data: expect.objectContaining({ postcode: "2000", region: "NSW" }),
+        }),
+      );
+    });
   });
   describe("mobile", () => {
     beforeAll(() => {

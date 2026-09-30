@@ -12,6 +12,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { contactOptionText } from "../misc/ContactOption";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { AutocompleteCompanyInput } from "../companies/AutocompleteCompanyInput.tsx";
+import { dealValueBands } from "./dealValueBands";
+import { dealLeadQualities } from "./dealLeadQualities";
 
 export const DealInputs = () => {
   const isMobile = useIsMobile();
@@ -79,17 +81,23 @@ const DealMiscInputs = () => {
         optionValue="value"
         helperText={false}
       />
-      <NumberInput
-        source="amount"
-        defaultValue={0}
+      <NumberInput source="amount" helperText={false} />
+      <DateInput source="expected_closing_date" helperText={false} />
+      <TextInput source="business_identifier" helperText={false} />
+      <TextInput source="enquiry_type" helperText={false} />
+      <SelectInput
+        source="value_band"
+        choices={dealValueBands}
+        optionText="label"
+        optionValue="value"
         helperText={false}
-        validate={required()}
       />
-      <DateInput
-        validate={required()}
-        source="expected_closing_date"
+      <SelectInput
+        source="lead_quality"
+        choices={dealLeadQualities}
+        optionText="label"
+        optionValue="value"
         helperText={false}
-        defaultValue={new Date().toISOString().split("T")[0]}
       />
       <SelectInput
         source="stage"

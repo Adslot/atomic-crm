@@ -202,6 +202,10 @@ describe("DataImportButton", () => {
         stage: "Proposal Sent",
         amount: "12000",
         expected_closing_date: "2026-09-30",
+        business_identifier: " 51 824 753 556 ",
+        enquiry_type: "Website",
+        value_band: "sale $10k+",
+        lead_quality: "Excellent",
       },
       { name: "Print campaign", company: "Acme", stage: null },
     ]);
@@ -221,6 +225,10 @@ describe("DataImportButton", () => {
       company_id: companies[0].id,
       name: "New website",
       stage: "proposal-sent",
+      business_identifier: "51 824 753 556",
+      enquiry_type: "Website",
+      value_band: "sale-10k-plus",
+      lead_quality: "excellent",
     });
     expect(deals[0].expected_closing_date).toBe("2026-09-30T00:00:00.000Z");
     // Both rows name the same company, which is created once and shared
