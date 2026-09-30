@@ -25,7 +25,8 @@ create policy "Company Delete Policy" on public.companies for delete to authenti
 -- Non-admins only see the contacts they manage
 create policy "Enable read access for authenticated users" on public.contacts for select to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id()));
 create policy "Enable insert for authenticated users only" on public.contacts for insert to authenticated with check (true);
-create policy "Enable update for authenticated users only" on public.contacts for update to authenticated using (true) with check (true);
+-- Non-admins can only update their own contacts, and cannot reassign them to another account manager
+create policy "Enable update for authenticated users only" on public.contacts for update to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id())) with check ((select public.is_admin()) or sales_id = (select public.current_sales_id()));
 create policy "Contact Delete Policy" on public.contacts for delete to authenticated using (true);
 
 -- Contact Notes

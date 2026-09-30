@@ -3,7 +3,7 @@ import type { Meta } from "@storybook/react-vite";
 import { ContactEdit } from "./ContactEdit";
 import { Route, Routes } from "react-router";
 import { buildContact, StoryWrapper } from "@/test/StoryWrapper";
-import type { DataProvider } from "ra-core";
+import type { AuthProvider, DataProvider } from "ra-core";
 
 const meta = {
   title: "Atomic CRM/Contacts/Contact Edit",
@@ -18,13 +18,16 @@ const meta = {
 export default meta;
 
 export const ContactEditBasic = ({
+  authProvider,
   dataProvider = {},
   silent,
 }: {
+  authProvider?: Partial<AuthProvider>;
   dataProvider?: Partial<DataProvider>;
   silent?: boolean;
 }) => (
   <StoryWrapper
+    authProvider={authProvider}
     initialEntries={["/contacts/1"]}
     data={{
       contacts: [

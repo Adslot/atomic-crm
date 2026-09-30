@@ -1,6 +1,7 @@
 import {
   email,
   required,
+  useCanAccess,
   useRecordContext,
   useTranslate,
   useUpdate,
@@ -213,6 +214,11 @@ const ContactPersonalInformationInputs = () => {
 
 const ContactMiscInputs = () => {
   const translate = useTranslate();
+  // Only admins can reassign a contact; the database enforces the same rule
+  const { canAccess: canReassign } = useCanAccess({
+    resource: "sales",
+    action: "list",
+  });
   return (
     <div className="flex flex-col gap-4">
       <h6 className="text-lg font-semibold">
@@ -232,6 +238,7 @@ const ContactMiscInputs = () => {
           helperText={false}
           optionText={saleOptionRenderer}
           validate={required()}
+          readOnly={!canReassign}
         />
       </ReferenceInput>
     </div>

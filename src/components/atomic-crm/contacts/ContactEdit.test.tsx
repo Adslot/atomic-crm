@@ -176,6 +176,38 @@ describe("ContactEdit", () => {
       );
     });
   });
+  describe("account manager", () => {
+    beforeAll(() => {
+      page.viewport(1600, 900);
+    });
+
+    it("lets an admin reassign the contact", async () => {
+      // Arrange / Act
+      const screen = await render(<ContactEditBasic silent />);
+
+      // Assert
+      await expect
+        .element(screen.getByRole("combobox", { name: "Account manager" }))
+        .toBeEnabled();
+    });
+
+    it("prevents a non-admin from reassigning the contact", async () => {
+      // Arrange / Act
+      const screen = await render(
+        <ContactEditBasic
+          silent
+          authProvider={{
+            canAccess: async ({ resource }) => resource !== "sales",
+          }}
+        />,
+      );
+
+      // Assert
+      await expect
+        .element(screen.getByRole("combobox", { name: "Account manager" }))
+        .toBeDisabled();
+    });
+  });
   describe("mobile", () => {
     beforeAll(() => {
       page.viewport(375, 667);

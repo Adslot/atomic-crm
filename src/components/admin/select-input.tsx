@@ -273,12 +273,15 @@ export const SelectInput = (props: SelectInputProps) => {
           >
             <SelectTrigger
               className={cn("w-full transition-all hover:bg-accent")}
-              disabled={field.disabled}
+              disabled={field.disabled || readOnly}
               aria-labelledby={labelId}
             >
               <SelectValue placeholder={renderEmptyItemOption()} />
 
-              {field.value && field.value !== emptyValue ? (
+              {field.value &&
+              field.value !== emptyValue &&
+              !field.disabled &&
+              !readOnly ? (
                 <div
                   role="button"
                   className="p-0 ml-auto pointer-events-auto hover:bg-transparent text-muted-foreground opacity-50 hover:opacity-100"
