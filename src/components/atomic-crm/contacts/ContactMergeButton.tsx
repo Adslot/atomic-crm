@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Merge, CircleX, AlertTriangle, ArrowDown } from "lucide-react";
 import {
+  useCanAccess,
   useDataProvider,
   useRecordContext,
   useGetList,
@@ -31,6 +32,12 @@ import { contactOptionText } from "../misc/ContactOption";
 export const ContactMergeButton = () => {
   const translate = useTranslate();
   const [mergeDialogOpen, setMergeDialogOpen] = useState(false);
+  // Merging deletes the losing contact, so it requires delete access
+  const { canAccess } = useCanAccess({
+    action: "delete",
+    resource: "contacts",
+  });
+  if (!canAccess) return null;
   return (
     <>
       <Button

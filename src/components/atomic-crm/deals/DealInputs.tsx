@@ -3,6 +3,7 @@ import { AutocompleteArrayInput } from "@/components/admin/autocomplete-array-in
 import { ReferenceArrayInput } from "@/components/admin/reference-array-input";
 import { ReferenceInput } from "@/components/admin/reference-input";
 import { TextInput } from "@/components/admin/text-input";
+import { TextArrayInput } from "@/components/admin/text-array-input";
 import { NumberInput } from "@/components/admin/number-input";
 import { DateInput } from "@/components/admin/date-input";
 import { SelectInput } from "@/components/admin/select-input";
@@ -84,7 +85,7 @@ const DealMiscInputs = () => {
       <NumberInput source="amount" helperText={false} />
       <DateInput source="expected_closing_date" helperText={false} />
       <TextInput source="business_identifier" helperText={false} />
-      <TextInput source="enquiry_type" helperText={false} />
+      <TextArrayInput source="enquiry_type" helperText={false} />
       <SelectInput
         source="value_band"
         choices={dealValueBands}

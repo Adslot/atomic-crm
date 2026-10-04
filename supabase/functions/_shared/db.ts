@@ -75,7 +75,7 @@ interface DealsTable {
   sales_id: number | null;
   index: number | null;
   business_identifier: string | null;
-  enquiry_type: string | null;
+  enquiry_type: string[] | null;
   value_band: string | null;
   lead_quality: string | null;
 }

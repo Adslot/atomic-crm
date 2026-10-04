@@ -4,6 +4,7 @@ import { Archive, ArchiveRestore } from "lucide-react";
 import {
   InfiniteListBase,
   ShowBase,
+  useCanAccess,
   useDataProvider,
   useNotify,
   useRecordContext,
@@ -25,16 +26,10 @@ import { Separator } from "@/components/ui/separator";
 import { CompanyAvatar } from "../companies/CompanyAvatar";
 import { NoteCreate } from "../notes/NoteCreate";
 import { NotesIterator } from "../notes/NotesIterator";
-import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Deal } from "../types";
 import { ContactList } from "./ContactList";
-import {
-  findDealLabel,
-  formatDealAmount,
-  formatISODateString,
-} from "./dealUtils";
-import { dealValueBands } from "./dealValueBands";
-import { dealLeadQualities } from "./dealLeadQualities";
+import { DealLeadDetails } from "./DealLeadDetails";
+import { formatISODateString } from "./dealUtils";
 
 export const DealShow = ({ open, id }: { open: boolean; id?: string }) => {
   const redirect = useRedirect();
@@ -57,7 +52,6 @@ export const DealShow = ({ open, id }: { open: boolean; id?: string }) => {
 
 const DealShowContent = () => {
   const translate = useTranslate();
-  const { dealStages, dealCategories, currency } = useConfigurationContext();
   const record = useRecordContext<Deal>();
   if (!record) return null;
 
@@ -124,81 +118,9 @@ const DealShowContent = () => {
                 </div>
               </div>
             )}
-
-            {record.amount != null && (
-              <div className="flex flex-col mr-10">
-                <span className="text-xs text-muted-foreground tracking-wide">
-                  {translate("resources.deals.fields.amount")}
-                </span>
-                <span className="text-sm">
-                  {formatDealAmount(record.amount, currency)}
-                </span>
-              </div>
-            )}
-
-            {record.category && (
-              <div className="flex flex-col mr-10">
-                <span className="text-xs text-muted-foreground tracking-wide">
-                  {translate("resources.deals.fields.category")}
-                </span>
-                <span className="text-sm">
-                  {dealCategories.find((c) => c.value === record.category)
-                    ?.label ?? record.category}
-                </span>
-              </div>
-            )}
-
-            <div className="flex flex-col mr-10">
-              <span className="text-xs text-muted-foreground tracking-wide">
-                {translate("resources.deals.fields.stage")}
-              </span>
-              <span className="text-sm">
-                {findDealLabel(dealStages, record.stage)}
-              </span>
-            </div>
-
-            {record.business_identifier && (
-              <div className="flex flex-col mr-10">
-                <span className="text-xs text-muted-foreground tracking-wide">
-                  {translate("resources.deals.fields.business_identifier")}
-                </span>
-                <span className="text-sm">{record.business_identifier}</span>
-              </div>
-            )}
-
-            {record.enquiry_type && (
-              <div className="flex flex-col mr-10">
-                <span className="text-xs text-muted-foreground tracking-wide">
-                  {translate("resources.deals.fields.enquiry_type")}
-                </span>
-                <span className="text-sm">{record.enquiry_type}</span>
-              </div>
-            )}
-
-            {record.value_band && (
-              <div className="flex flex-col mr-10">
-                <span className="text-xs text-muted-foreground tracking-wide">
-                  {translate("resources.deals.fields.value_band")}
-                </span>
-                <span className="text-sm">
-                  {findDealLabel(dealValueBands, record.value_band) ??
-                    record.value_band}
-                </span>
-              </div>
-            )}
-
-            {record.lead_quality && (
-              <div className="flex flex-col mr-10">
-                <span className="text-xs text-muted-foreground tracking-wide">
-                  {translate("resources.deals.fields.lead_quality")}
-                </span>
-                <span className="text-sm">
-                  {findDealLabel(dealLeadQualities, record.lead_quality) ??
-                    record.lead_quality}
-                </span>
-              </div>
-            )}
           </div>
+
+          <DealLeadDetails record={record} />
 
           {!!record.contact_ids?.length && (
             <div className="m-4">
@@ -258,6 +180,7 @@ const ArchivedTitle = () => {
 
 const ArchiveButton = ({ record }: { record: Deal }) => {
   const translate = useTranslate();
+  const { canAccess } = useCanAccess({ action: "archive", resource: "deals" });
   const [update] = useUpdate();
   const redirect = useRedirect();
   const notify = useNotify();
@@ -288,6 +211,8 @@ const ArchiveButton = ({ record }: { record: Deal }) => {
     );
   };
 
+  if (!canAccess) return null;
+
   return (
     <Button
       onClick={handleClick}
@@ -303,6 +228,7 @@ const ArchiveButton = ({ record }: { record: Deal }) => {
 
 const UnarchiveButton = ({ record }: { record: Deal }) => {
   const translate = useTranslate();
+  const { canAccess } = useCanAccess({ action: "archive", resource: "deals" });
   const dataProvider = useDataProvider();
   const redirect = useRedirect();
   const notify = useNotify();
@@ -328,6 +254,8 @@ const UnarchiveButton = ({ record }: { record: Deal }) => {
   const handleClick = () => {
     mutate();
   };
+
+  if (!canAccess) return null;
 
   return (
     <Button

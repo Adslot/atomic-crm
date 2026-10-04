@@ -204,6 +204,7 @@ export const frenchCrmMessages = {
         new: "Nouvelle affaire",
       },
       field_categories: {
+        lead: "Prospect",
         misc: "Divers",
       },
       filters: {

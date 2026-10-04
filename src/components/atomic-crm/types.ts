@@ -131,7 +131,7 @@ export type Deal = {
   sales_id: Identifier;
   index: number;
   business_identifier?: string | null;
-  enquiry_type?: string | null;
+  enquiry_type?: string[] | null;
   value_band?: string | null;
   lead_quality?: string | null;
 } & Pick<RaRecord, "id">;

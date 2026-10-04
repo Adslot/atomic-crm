@@ -200,6 +200,7 @@ export const englishCrmMessages = {
         new: "New Deal",
       },
       field_categories: {
+        lead: "Lead",
         misc: "Misc",
       },
       filters: {

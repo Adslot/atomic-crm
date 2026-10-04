@@ -4,7 +4,13 @@ import { useDataProvider, useGetIdentity, type DataProvider } from "ra-core";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { useCompanyResolver } from "./useCompanyResolver";
 import { createEachRow } from "./createEachRow";
-import { toConfiguredValue, toInteger, toIsoDate, toText } from "./parseCell";
+import {
+  toConfiguredValue,
+  toInteger,
+  toIsoDate,
+  toText,
+  toTextList,
+} from "./parseCell";
 import type { ImportRow, ProcessImportBatch } from "./types";
 import { dealValueBands } from "../deals/dealValueBands";
 import { dealLeadQualities } from "../deals/dealLeadQualities";
@@ -64,7 +70,7 @@ export function useDealImport(): ProcessImportBatch {
               amount: toInteger(row.amount),
               expected_closing_date: toIsoDate(row.expected_closing_date),
               business_identifier: toText(row.business_identifier),
-              enquiry_type: toText(row.enquiry_type),
+              enquiry_type: toTextList(row.enquiry_type),
               value_band: toConfiguredValue(row.value_band, dealValueBands),
               lead_quality: toConfiguredValue(
                 row.lead_quality,

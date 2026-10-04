@@ -203,7 +203,7 @@ describe("DataImportButton", () => {
         amount: "12000",
         expected_closing_date: "2026-09-30",
         business_identifier: " 51 824 753 556 ",
-        enquiry_type: "Website",
+        enquiry_type: "Website, Referral",
         value_band: "sale $10k+",
         lead_quality: "Excellent",
       },
@@ -226,7 +226,7 @@ describe("DataImportButton", () => {
       name: "New website",
       stage: "proposal-sent",
       business_identifier: "51 824 753 556",
-      enquiry_type: "Website",
+      enquiry_type: ["Website", "Referral"],
       value_band: "sale-10k-plus",
       lead_quality: "excellent",
     });

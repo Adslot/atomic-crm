@@ -3,6 +3,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import type { RaRecord } from "ra-core";
 import {
+  useCanAccess,
   useCreatePath,
   useGetRecordRepresentation,
   useGetResourceLabel,
@@ -43,6 +44,11 @@ export const EditButton = (props: EditButtonProps) => {
   const { label: labelProp } = props;
   const resource = useResourceContext(props);
   const record = useRecordContext(props);
+  const { canAccess, isPending: isCheckingAccess } = useCanAccess({
+    action: "edit",
+    resource,
+    record,
+  });
   const createPath = useCreatePath();
   const getResourceLabel = useGetResourceLabel();
   const getRecordRepresentation = useGetRecordRepresentation(resource);
@@ -65,6 +71,7 @@ export const EditButton = (props: EditButtonProps) => {
     },
     userText: labelProp,
   });
+  if (isCheckingAccess || !canAccess) return null;
   return (
     <Link
       className={buttonVariants({ variant: "outline" })}

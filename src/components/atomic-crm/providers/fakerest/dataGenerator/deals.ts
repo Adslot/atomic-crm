@@ -44,7 +44,7 @@ export const generateDeals = (db: Db): Deal[] => {
       sales_id: company.sales_id!,
       index: 0,
       business_identifier: company.tax_identifier,
-      enquiry_type: random.arrayElement([
+      enquiry_type: random.arrayElements([
         "Inbound call",
         "Web form",
         "Referral",

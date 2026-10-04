@@ -80,7 +80,7 @@ create table public.deals (
     sales_id bigint,
     index smallint,
     business_identifier text,
-    enquiry_type text,
+    enquiry_type text[],
     value_band text,
     lead_quality text
 );

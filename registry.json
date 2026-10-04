@@ -602,6 +602,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/deals/DealLeadDetails.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/deals/DealInputs.tsx",
           "type": "registry:component"
         },
