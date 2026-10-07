@@ -21,6 +21,10 @@ import type {
 } from "../../types";
 import type { ConfigurationContextValue } from "../../root/ConfigurationContext";
 import { getActivityLog } from "../commons/activity";
+import {
+  CONTACT_SALES_FILTER,
+  matchesContactSalesFilter,
+} from "../commons/dealContactSalesFilter";
 import { getCompanyAvatar } from "../commons/getCompanyAvatar";
 import { getContactAvatar } from "../commons/getContactAvatar";
 import { mergeContacts } from "../commons/mergeContacts";
@@ -180,6 +184,40 @@ export const createDataProvider = ({
         const { page, perPage } = pagination;
         const start = (page - 1) * perPage;
         return { data: all.slice(start, start + perPage), total: all.length };
+      }
+      if (
+        resource === "deals" &&
+        params.filter?.[CONTACT_SALES_FILTER] != null
+      ) {
+        // Emulates the contact_sales_ids computed column of the Supabase schema
+        const { [CONTACT_SALES_FILTER]: salesId, ...filter } = params.filter;
+        const [{ data: contacts }, { data: deals }] = await Promise.all([
+          baseDataProvider.getList<Contact>("contacts", {
+            pagination: { page: 1, perPage: 10000 },
+            sort: { field: "id", order: "ASC" },
+            filter: {},
+          }),
+          baseDataProvider.getList<Deal>("deals", {
+            ...params,
+            filter,
+            pagination: { page: 1, perPage: 10000 },
+          }),
+        ]);
+        const salesIdByContact = new Map(
+          contacts.map((contact) => [contact.id, contact.sales_id]),
+        );
+        const matches = deals.filter((deal) =>
+          matchesContactSalesFilter(
+            salesId,
+            (deal.contact_ids ?? []).map((id) => salesIdByContact.get(id)),
+          ),
+        );
+        const { page, perPage } = params.pagination;
+        const start = (page - 1) * perPage;
+        return {
+          data: matches.slice(start, start + perPage),
+          total: matches.length,
+        };
       }
       return baseDataProvider.getList(resource, params);
     },

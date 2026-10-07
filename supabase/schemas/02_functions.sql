@@ -84,6 +84,16 @@ exception
 end;
 $$;
 
+-- Computed column: the account managers of a deal's contacts, filterable through PostgREST
+CREATE OR REPLACE FUNCTION "public"."contact_sales_ids"("deal" "public"."deals") RETURNS bigint[]
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO ''
+    AS $$
+  select coalesce(array_agg(distinct co.sales_id) filter (where co.sales_id is not null), '{}')
+  from public.contacts co
+  where co.id = any(deal.contact_ids);
+$$;
+
 CREATE OR REPLACE FUNCTION "public"."current_sales_id"() RETURNS bigint
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO ''

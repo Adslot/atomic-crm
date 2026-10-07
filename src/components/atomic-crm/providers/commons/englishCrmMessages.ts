@@ -205,6 +205,7 @@ export const englishCrmMessages = {
       },
       filters: {
         only_mine: "Only deals I manage",
+        no_account_manager: "No account manager",
       },
       archived: {
         action: "Archive",

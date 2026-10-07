@@ -2,17 +2,22 @@ import { useGetIdentity, useListFilterContext, useTranslate } from "ra-core";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
-export const OnlyMineInput = (_: { alwaysOn: boolean; source: string }) => {
+export const OnlyMineInput = ({
+  source,
+}: {
+  alwaysOn: boolean;
+  source: string;
+}) => {
   const translate = useTranslate();
   const { filterValues, displayedFilters, setFilters } = useListFilterContext();
   const { identity } = useGetIdentity();
 
   const handleChange = () => {
     const newFilterValues = { ...filterValues };
-    if (typeof filterValues.sales_id !== "undefined") {
-      delete newFilterValues.sales_id;
+    if (typeof filterValues[source] !== "undefined") {
+      delete newFilterValues[source];
     } else {
-      newFilterValues.sales_id = identity && identity?.id;
+      newFilterValues[source] = identity && identity?.id;
     }
     setFilters(newFilterValues, displayedFilters);
   };
@@ -21,7 +26,7 @@ export const OnlyMineInput = (_: { alwaysOn: boolean; source: string }) => {
       <div className="flex items-center space-x-2">
         <Switch
           id="only-mine"
-          checked={typeof filterValues.sales_id !== "undefined"}
+          checked={typeof filterValues[source] !== "undefined"}
           onCheckedChange={handleChange}
         />
         <Label htmlFor="only-mine">

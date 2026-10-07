@@ -17,6 +17,7 @@ import type {
 } from "../../types";
 import type { ConfigurationContextValue } from "../../root/ConfigurationContext";
 import { ATTACHMENTS_BUCKET } from "../commons/attachments";
+import { toPostgrestContactSalesFilter } from "../commons/dealContactSalesFilter";
 import { getIsInitialized } from "./authProvider";
 import { getSupabaseClient } from "./supabase";
 
@@ -55,6 +56,12 @@ const getDataProviderWithCustomMethods = () => {
       }
       if (resource === "contacts") {
         return baseDataProvider.getList("contacts_summary", params);
+      }
+      if (resource === "deals") {
+        return baseDataProvider.getList("deals", {
+          ...params,
+          filter: toPostgrestContactSalesFilter(params.filter),
+        });
       }
       if (resource === "activity_log") {
         const { data, total } = await baseDataProvider.getList(

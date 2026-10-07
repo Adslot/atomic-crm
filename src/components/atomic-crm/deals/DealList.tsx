@@ -19,13 +19,14 @@ import { SelectInput } from "@/components/admin/select-input";
 import { DataImportButton } from "../dataImport/DataImportButton";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { TopToolbar } from "../layout/TopToolbar";
-import { AccountManagerInput } from "../sales/AccountManagerInput";
+import { CONTACT_SALES_FILTER } from "../providers/commons/dealContactSalesFilter";
 import { DealArchivedList } from "./DealArchivedList";
 import { DealCreate } from "./DealCreate";
 import { DealEdit } from "./DealEdit";
 import { DealEmpty } from "./DealEmpty";
 import { DealListContent } from "./DealListContent";
 import { DealShow } from "./DealShow";
+import { DealAccountManagerInput } from "./DealAccountManagerInput";
 import { OnlyMineInput } from "./OnlyMineInput";
 
 const DealList = () => {
@@ -61,9 +62,9 @@ const DealList = () => {
       ? []
       : [
           canAccessSalesList ? (
-            <AccountManagerInput source="sales_id" alwaysOn />
+            <DealAccountManagerInput source={CONTACT_SALES_FILTER} alwaysOn />
           ) : (
-            <OnlyMineInput source="sales_id" alwaysOn />
+            <OnlyMineInput source={CONTACT_SALES_FILTER} alwaysOn />
           ),
         ]),
   ];
@@ -71,6 +72,9 @@ const DealList = () => {
   return (
     <List
       perPage={100}
+      // The account manager filter moved from sales_id to contact_sales_id: a new
+      // store key drops filters saved under the old one, which had no visible input
+      storeKey="deals.board"
       filter={{ "archived_at@is": null }}
       title={false}
       sort={{ field: "index", order: "DESC" }}
