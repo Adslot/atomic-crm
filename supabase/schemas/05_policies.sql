@@ -16,31 +16,37 @@ alter table public.configuration enable row level security;
 alter table public.favicons_excluded_domains enable row level security;
 
 -- Companies
-create policy "Enable read access for authenticated users" on public.companies for select to authenticated using (true);
+-- Non-admins only see the companies they own (e.g. created), of the deals they manage, and of the contacts they can see
+create policy "Enable read access for authenticated users" on public.companies for select to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id()) or exists (select 1 from public.deals d where d.company_id = companies.id and d.sales_id = (select public.current_sales_id())) or exists (select 1 from public.contacts co where co.company_id = companies.id));
 create policy "Enable insert for authenticated users only" on public.companies for insert to authenticated with check (true);
 create policy "Enable update for authenticated users only" on public.companies for update to authenticated using (true) with check (true);
 create policy "Company Delete Policy" on public.companies for delete to authenticated using (true);
 
 -- Contacts
-create policy "Enable read access for authenticated users" on public.contacts for select to authenticated using (true);
+-- Non-admins only see the contacts of the deals they manage, and the contacts they own (e.g. created)
+create policy "Enable read access for authenticated users" on public.contacts for select to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id()) or exists (select 1 from public.deals d where d.sales_id = (select public.current_sales_id()) and contacts.id = any(d.contact_ids)));
 create policy "Enable insert for authenticated users only" on public.contacts for insert to authenticated with check (true);
-create policy "Enable update for authenticated users only" on public.contacts for update to authenticated using (true) with check (true);
+-- Non-admins can only update the contacts they can see
+create policy "Enable update for authenticated users only" on public.contacts for update to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id()) or exists (select 1 from public.deals d where d.sales_id = (select public.current_sales_id()) and contacts.id = any(d.contact_ids))) with check ((select public.is_admin()) or sales_id = (select public.current_sales_id()) or exists (select 1 from public.deals d where d.sales_id = (select public.current_sales_id()) and contacts.id = any(d.contact_ids)));
 create policy "Contact Delete Policy" on public.contacts for delete to authenticated using (true);
 
 -- Contact Notes
-create policy "Enable read access for authenticated users" on public.contact_notes for select to authenticated using (true);
+-- Notes follow the visibility of their contact
+create policy "Enable read access for authenticated users" on public.contact_notes for select to authenticated using (exists (select 1 from public.contacts co where co.id = contact_notes.contact_id));
 create policy "Enable insert for authenticated users only" on public.contact_notes for insert to authenticated with check (true);
 create policy "Contact Notes Update policy" on public.contact_notes for update to authenticated using (true);
 create policy "Contact Notes Delete Policy" on public.contact_notes for delete to authenticated using (true);
 
 -- Deals
-create policy "Enable read access for authenticated users" on public.deals for select to authenticated using (true);
+-- Non-admins only see the deals they are the account manager of
+create policy "Enable read access for authenticated users" on public.deals for select to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id()));
 create policy "Enable insert for authenticated users only" on public.deals for insert to authenticated with check (true);
 create policy "Enable update for authenticated users only" on public.deals for update to authenticated using (true) with check (true);
 create policy "Deals Delete Policy" on public.deals for delete to authenticated using (true);
 
 -- Deal Notes
-create policy "Enable read access for authenticated users" on public.deal_notes for select to authenticated using (true);
+-- Notes follow the visibility of their deal
+create policy "Enable read access for authenticated users" on public.deal_notes for select to authenticated using (exists (select 1 from public.deals d where d.id = deal_notes.deal_id));
 create policy "Enable insert for authenticated users only" on public.deal_notes for insert to authenticated with check (true);
 create policy "Deal Notes Update Policy" on public.deal_notes for update to authenticated using (true);
 create policy "Deal Notes Delete Policy" on public.deal_notes for delete to authenticated using (true);
@@ -55,7 +61,8 @@ create policy "Enable update for authenticated users only" on public.tags for up
 create policy "Enable delete for authenticated users only" on public.tags for delete to authenticated using (true);
 
 -- Tasks
-create policy "Enable read access for authenticated users" on public.tasks for select to authenticated using (true);
+-- Tasks follow the visibility of their contact
+create policy "Enable read access for authenticated users" on public.tasks for select to authenticated using (exists (select 1 from public.contacts co where co.id = tasks.contact_id));
 create policy "Enable insert for authenticated users only" on public.tasks for insert to authenticated with check (true);
 create policy "Task Update Policy" on public.tasks for update to authenticated using (true);
 create policy "Task Delete Policy" on public.tasks for delete to authenticated using (true);

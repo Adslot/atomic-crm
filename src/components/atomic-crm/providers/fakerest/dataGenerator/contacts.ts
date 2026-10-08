@@ -1,4 +1,5 @@
 import {
+  address,
   company as fakerCompany,
   internet,
   lorem,
@@ -8,7 +9,7 @@ import {
 } from "faker/locale/en_US";
 
 import { defaultNoteStatuses } from "../../../root/defaultConfiguration";
-import { contactGender } from "../../../contacts/contactModel";
+import { contactGender, contactRegions } from "../../../contacts/contactModel";
 import type { Company, Contact } from "../../../types";
 import type { Db } from "./types";
 import { randomDate, weightedBoolean } from "./utils";
@@ -96,6 +97,8 @@ export const generateContacts = (db: Db, size = 500): Required<Contact>[] => {
       sales_id: company.sales_id!,
       nb_tasks: 0,
       linkedin_url: null,
+      postcode: address.zipCode(),
+      region: random.arrayElement(contactRegions).id,
     };
   });
 };

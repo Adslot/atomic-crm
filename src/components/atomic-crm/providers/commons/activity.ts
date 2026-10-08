@@ -167,7 +167,7 @@ async function getNewDealsAndNotes(
     id: `deal.${deal.id}.created`,
     type: DEAL_CREATED,
     company_id: deal.company_id,
-    sales_id: deal.sales_id,
+    sales_id: deal.sales_id ?? undefined,
     deal,
     date: deal.created_at,
   }));

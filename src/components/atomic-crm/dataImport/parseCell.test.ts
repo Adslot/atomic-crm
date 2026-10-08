@@ -6,6 +6,7 @@ import {
   toIsoDate,
   toNumber,
   toText,
+  toTextList,
 } from "./parseCell";
 
 const stages = [
@@ -90,5 +91,19 @@ describe("toConfiguredValue", () => {
   it("returns undefined when no option matches", () => {
     expect(toConfiguredValue("Archived", stages)).toBeUndefined();
     expect(toConfiguredValue(null, stages)).toBeUndefined();
+  });
+});
+
+describe("toTextList", () => {
+  it("splits a comma-separated cell into trimmed items", () => {
+    expect(toTextList(" Website , Referral,, ")).toEqual([
+      "Website",
+      "Referral",
+    ]);
+  });
+
+  it("returns undefined for an empty or blank cell", () => {
+    expect(toTextList(null)).toBeUndefined();
+    expect(toTextList(" , ")).toBeUndefined();
   });
 });

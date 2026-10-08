@@ -19,14 +19,13 @@ import { SelectInput } from "@/components/admin/select-input";
 import { DataImportButton } from "../dataImport/DataImportButton";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { TopToolbar } from "../layout/TopToolbar";
-import { AccountManagerInput } from "../sales/AccountManagerInput";
 import { DealArchivedList } from "./DealArchivedList";
 import { DealCreate } from "./DealCreate";
 import { DealEdit } from "./DealEdit";
 import { DealEmpty } from "./DealEmpty";
 import { DealListContent } from "./DealListContent";
 import { DealShow } from "./DealShow";
-import { OnlyMineInput } from "./OnlyMineInput";
+import { DealAccountManagerInput } from "./DealAccountManagerInput";
 
 const DealList = () => {
   const { identity } = useGetIdentity();
@@ -57,15 +56,10 @@ const DealList = () => {
         optionValue="value"
       />
     </WrapperField>,
-    ...(isPending
-      ? []
-      : [
-          canAccessSalesList ? (
-            <AccountManagerInput source="sales_id" alwaysOn />
-          ) : (
-            <OnlyMineInput source="sales_id" alwaysOn />
-          ),
-        ]),
+    // Non-admins only see their own deals, so only admins filter by account manager
+    ...(!isPending && canAccessSalesList
+      ? [<DealAccountManagerInput source="sales_id" alwaysOn />]
+      : []),
   ];
 
   return (

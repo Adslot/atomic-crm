@@ -21,6 +21,7 @@ import type {
 } from "../../types";
 import type { ConfigurationContextValue } from "../../root/ConfigurationContext";
 import { getActivityLog } from "../commons/activity";
+import { toDealSalesFilter } from "../commons/dealSalesFilter";
 import { getCompanyAvatar } from "../commons/getCompanyAvatar";
 import { getContactAvatar } from "../commons/getContactAvatar";
 import { mergeContacts } from "../commons/mergeContacts";
@@ -563,6 +564,10 @@ export const createDataProvider = ({
       } satisfies ResourceCallbacks<Company>,
       {
         resource: "deals",
+        beforeGetList: async (params) => ({
+          ...params,
+          filter: toDealSalesFilter(params.filter),
+        }),
         beforeCreate: async (params) => {
           return {
             ...params,

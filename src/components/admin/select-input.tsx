@@ -181,9 +181,10 @@ export const SelectInput = (props: SelectInputProps) => {
       if (value === emptyValue) {
         field.onChange(emptyValue);
       } else {
-        // Find the choice by value and pass it to field.onChange
+        // Find the choice by value and pass it to field.onChange. Radix Select
+        // values are strings, so compare as strings to keep numeric ids numeric.
         const choice = allChoices?.find(
-          (choice) => getChoiceValue(choice) === value,
+          (choice) => getChoiceValue(choice)?.toString() === value,
         );
         field.onChange(choice ? getChoiceValue(choice) : value);
       }
@@ -273,12 +274,15 @@ export const SelectInput = (props: SelectInputProps) => {
           >
             <SelectTrigger
               className={cn("w-full transition-all hover:bg-accent")}
-              disabled={field.disabled}
+              disabled={field.disabled || readOnly}
               aria-labelledby={labelId}
             >
               <SelectValue placeholder={renderEmptyItemOption()} />
 
-              {field.value && field.value !== emptyValue ? (
+              {field.value &&
+              field.value !== emptyValue &&
+              !field.disabled &&
+              !readOnly ? (
                 <div
                   role="button"
                   className="p-0 ml-auto pointer-events-auto hover:bg-transparent text-muted-foreground opacity-50 hover:opacity-100"

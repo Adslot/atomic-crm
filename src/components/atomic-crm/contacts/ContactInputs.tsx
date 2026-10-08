@@ -20,11 +20,12 @@ import { SimpleFormIterator } from "@/components/admin/simple-form-iterator";
 
 import { isLinkedinUrl } from "../misc/isLinkedInUrl";
 import { StatusSelector } from "../notes";
-import type { Sale, Contact } from "../types";
+import type { Contact } from "../types";
 import { Avatar } from "./Avatar";
 import { AutocompleteCompanyInput } from "../companies/AutocompleteCompanyInput.tsx";
 import {
   contactGender,
+  contactRegions,
   translateContactGenderLabel,
   translatePersonalInfoTypeLabel,
 } from "./contactModel.ts";
@@ -200,6 +201,12 @@ const ContactPersonalInformationInputs = () => {
         helperText={false}
         validate={isLinkedinUrl}
       />
+      <TextInput source="postcode" helperText={false} />
+      <SelectInput
+        source="region"
+        choices={contactRegions}
+        helperText={false}
+      />
     </div>
   );
 };
@@ -213,26 +220,9 @@ const ContactMiscInputs = () => {
       </h6>
       <TextInput source="background" multiline helperText={false} />
       <BooleanInput source="has_newsletter" helperText={false} />
-      <ReferenceInput
-        reference="sales"
-        source="sales_id"
-        sort={{ field: "last_name", order: "ASC" }}
-        filter={{
-          "disabled@neq": true,
-        }}
-      >
-        <SelectInput
-          helperText={false}
-          optionText={saleOptionRenderer}
-          validate={required()}
-        />
-      </ReferenceInput>
     </div>
   );
 };
-
-const saleOptionRenderer = (choice: Sale) =>
-  `${choice.first_name} ${choice.last_name}`;
 
 export const ContactStatusSelector = () => {
   const record = useRecordContext<Contact>();

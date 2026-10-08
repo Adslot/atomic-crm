@@ -84,7 +84,7 @@ export const DealCardContent = ({
                   minimumSignificantDigits: 3,
                 }}
               />
-              {deal.category && ", "}
+              {deal.amount != null && deal.category && ", "}
               <SelectField
                 source="category"
                 choices={dealCategories}

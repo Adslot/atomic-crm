@@ -8,6 +8,15 @@ export const toText = (cell: ImportCell): string | undefined => {
   return text === "" ? undefined : text;
 };
 
+/** Comma-separated cell content as a list, or undefined when the cell is empty. */
+export const toTextList = (cell: ImportCell): string[] | undefined => {
+  const items = toText(cell)
+    ?.split(",")
+    .map((item) => item.trim())
+    .filter((item) => item !== "");
+  return items?.length ? items : undefined;
+};
+
 /** Cell content as a number, or undefined when it is empty or not numeric. */
 export const toNumber = (cell: ImportCell): number | undefined => {
   const text = toText(cell);

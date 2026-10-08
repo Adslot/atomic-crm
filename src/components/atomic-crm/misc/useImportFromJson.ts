@@ -370,6 +370,8 @@ export const useImportFromJson = (): [
             title: dataToImport.title?.trim(),
             background: dataToImport.background?.trim(),
             linkedin_url: dataToImport.linkedin_url?.trim(),
+            postcode: dataToImport.postcode?.trim(),
+            region: dataToImport.region?.trim().toUpperCase() || undefined,
             gender: gender || undefined,
             has_newsletter: !!dataToImport.has_newsletter,
             company_id: dataToImport.company_id
@@ -750,6 +752,8 @@ type ContactImport = {
   title?: string;
   background?: string;
   linkedin_url?: string;
+  postcode?: string;
+  region?: string;
   avatar?: string;
   gender?: string;
   has_newsletter?: boolean;

@@ -33,6 +33,15 @@ export function getRelativeTimeString(
   return ucFirst(rtf.format(unitDiff, "day"));
 }
 
+export const formatDealAmount = (amount: number, currency: string): string =>
+  amount.toLocaleString("en-US", {
+    notation: "compact",
+    style: "currency",
+    currency,
+    currencyDisplay: "narrowSymbol",
+    minimumSignificantDigits: 3,
+  });
+
 function ucFirst(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }

@@ -35,6 +35,8 @@ export interface ContactsTable {
   company_id: number | null;
   sales_id: number | null;
   linkedin_url: string | null;
+  postcode: string | null;
+  region: string | null;
 }
 
 interface TasksTable {
@@ -72,6 +74,10 @@ interface DealsTable {
   expected_closing_date: Date | null;
   sales_id: number | null;
   index: number | null;
+  business_identifier: string | null;
+  enquiry_type: string[] | null;
+  value_band: string | null;
+  lead_quality: string | null;
 }
 
 interface Database {

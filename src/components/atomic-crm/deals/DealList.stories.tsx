@@ -24,6 +24,12 @@ const dataForAccountManagerFilter = {
   deals: [
     buildDeal({ id: 1, name: "Jane deal", sales_id: 0 }),
     buildDeal({ id: 2, index: 1, name: "Marie deal", sales_id: 1 }),
+    buildDeal({
+      id: 3,
+      index: 2,
+      name: "Unassigned deal",
+      sales_id: undefined,
+    }),
   ],
   sales: [
     buildSale({ administrator: true, first_name: "Jane", id: 0 }),

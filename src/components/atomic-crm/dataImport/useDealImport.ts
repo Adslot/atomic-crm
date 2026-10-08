@@ -4,8 +4,16 @@ import { useDataProvider, useGetIdentity, type DataProvider } from "ra-core";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { useCompanyResolver } from "./useCompanyResolver";
 import { createEachRow } from "./createEachRow";
-import { toConfiguredValue, toInteger, toIsoDate, toText } from "./parseCell";
+import {
+  toConfiguredValue,
+  toInteger,
+  toIsoDate,
+  toText,
+  toTextList,
+} from "./parseCell";
 import type { ImportRow, ProcessImportBatch } from "./types";
+import { dealValueBands } from "../deals/dealValueBands";
+import { dealLeadQualities } from "../deals/dealLeadQualities";
 
 /** One CSV row, with the values needed before its deal can be created. */
 type DealRow = {
@@ -61,6 +69,13 @@ export function useDealImport(): ProcessImportBatch {
               // amount lands in a bigint column, which rejects "4500.50"
               amount: toInteger(row.amount),
               expected_closing_date: toIsoDate(row.expected_closing_date),
+              business_identifier: toText(row.business_identifier),
+              enquiry_type: toTextList(row.enquiry_type),
+              value_band: toConfiguredValue(row.value_band, dealValueBands),
+              lead_quality: toConfiguredValue(
+                row.lead_quality,
+                dealLeadQualities,
+              ),
               sales_id: identity?.id,
               index: indexes.get(row) ?? 0,
               created_at: now,

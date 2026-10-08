@@ -92,6 +92,8 @@ export type Contact = {
   email_jsonb: EmailAndType[];
   avatar?: Partial<RAFile>;
   linkedin_url?: string | null;
+  postcode?: string | null;
+  region?: string | null;
   first_seen: string;
   last_seen: string;
   has_newsletter: boolean;
@@ -121,13 +123,17 @@ export type Deal = {
   category: string;
   stage: string;
   description: string;
-  amount: number;
+  amount: number | null;
   created_at: string;
   updated_at: string;
   archived_at?: string;
-  expected_closing_date: string;
-  sales_id: Identifier;
+  expected_closing_date: string | null;
+  sales_id?: Identifier | null;
   index: number;
+  business_identifier?: string | null;
+  enquiry_type?: string[] | null;
+  value_band?: string | null;
+  lead_quality?: string | null;
 } & Pick<RaRecord, "id">;
 
 export type DealNote = {

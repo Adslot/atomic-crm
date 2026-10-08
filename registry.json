@@ -186,10 +186,6 @@
           "type": "registry:component"
         },
         {
-          "path": "src/components/atomic-crm/sales/AccountManagerInput.tsx",
-          "type": "registry:component"
-        },
-        {
           "path": "src/components/atomic-crm/root/useConfigurationLoader.ts",
           "type": "registry:component"
         },
@@ -331,6 +327,10 @@
         },
         {
           "path": "src/components/atomic-crm/providers/commons/englishCrmMessages.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/providers/commons/dealSalesFilter.ts",
           "type": "registry:component"
         },
         {
@@ -574,11 +574,15 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/deals/dealValueBands.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/deals/dealUtils.ts",
           "type": "registry:component"
         },
         {
-          "path": "src/components/atomic-crm/deals/OnlyMineInput.tsx",
+          "path": "src/components/atomic-crm/deals/dealLeadQualities.ts",
           "type": "registry:component"
         },
         {
@@ -591,6 +595,10 @@
         },
         {
           "path": "src/components/atomic-crm/deals/DealList.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/deals/DealLeadDetails.tsx",
           "type": "registry:component"
         },
         {
@@ -619,6 +627,10 @@
         },
         {
           "path": "src/components/atomic-crm/deals/DealArchivedList.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/deals/DealAccountManagerInput.tsx",
           "type": "registry:component"
         },
         {

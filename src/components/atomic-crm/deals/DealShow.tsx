@@ -4,6 +4,7 @@ import { Archive, ArchiveRestore } from "lucide-react";
 import {
   InfiniteListBase,
   ShowBase,
+  useCanAccess,
   useDataProvider,
   useNotify,
   useRecordContext,
@@ -12,6 +13,7 @@ import {
   useTranslate,
   useUpdate,
 } from "ra-core";
+import { DateField } from "@/components/admin/date-field";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { EditButton } from "@/components/admin/edit-button";
 import { ReferenceArrayField } from "@/components/admin/reference-array-field";
@@ -24,10 +26,10 @@ import { Separator } from "@/components/ui/separator";
 import { CompanyAvatar } from "../companies/CompanyAvatar";
 import { NoteCreate } from "../notes/NoteCreate";
 import { NotesIterator } from "../notes/NotesIterator";
-import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Deal } from "../types";
 import { ContactList } from "./ContactList";
-import { findDealLabel, formatISODateString } from "./dealUtils";
+import { DealLeadDetails } from "./DealLeadDetails";
+import { formatISODateString } from "./dealUtils";
 
 export const DealShow = ({ open, id }: { open: boolean; id?: string }) => {
   const redirect = useRedirect();
@@ -50,7 +52,6 @@ export const DealShow = ({ open, id }: { open: boolean; id?: string }) => {
 
 const DealShowContent = () => {
   const translate = useTranslate();
-  const { dealStages, dealCategories, currency } = useConfigurationContext();
   const record = useRecordContext<Deal>();
   if (!record) return null;
 
@@ -88,58 +89,38 @@ const DealShowContent = () => {
           <div className="flex gap-8 m-4">
             <div className="flex flex-col mr-10">
               <span className="text-xs text-muted-foreground tracking-wide">
-                {translate("resources.deals.fields.expected_closing_date")}
+                {translate("resources.deals.fields.created_at")}
               </span>
-              <div className="flex items-center gap-2">
-                <span className="text-sm">
-                  {isValid(new Date(record.expected_closing_date))
-                    ? formatISODateString(record.expected_closing_date)
-                    : translate("resources.deals.invalid_date")}
-                </span>
-                {new Date(record.expected_closing_date) < new Date() ? (
-                  <Badge variant="destructive">
-                    {translate("crm.common.past")}
-                  </Badge>
-                ) : null}
-              </div>
+              <DateField
+                source="created_at"
+                showTime
+                options={{ dateStyle: "medium", timeStyle: "short" }}
+                className="text-sm"
+              />
             </div>
 
-            <div className="flex flex-col mr-10">
-              <span className="text-xs text-muted-foreground tracking-wide">
-                {translate("resources.deals.fields.amount")}
-              </span>
-              <span className="text-sm">
-                {record.amount.toLocaleString("en-US", {
-                  notation: "compact",
-                  style: "currency",
-                  currency,
-                  currencyDisplay: "narrowSymbol",
-                  minimumSignificantDigits: 3,
-                })}
-              </span>
-            </div>
-
-            {record.category && (
+            {record.expected_closing_date && (
               <div className="flex flex-col mr-10">
                 <span className="text-xs text-muted-foreground tracking-wide">
-                  {translate("resources.deals.fields.category")}
+                  {translate("resources.deals.fields.expected_closing_date")}
                 </span>
-                <span className="text-sm">
-                  {dealCategories.find((c) => c.value === record.category)
-                    ?.label ?? record.category}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">
+                    {isValid(new Date(record.expected_closing_date))
+                      ? formatISODateString(record.expected_closing_date)
+                      : translate("resources.deals.invalid_date")}
+                  </span>
+                  {new Date(record.expected_closing_date) < new Date() ? (
+                    <Badge variant="destructive">
+                      {translate("crm.common.past")}
+                    </Badge>
+                  ) : null}
+                </div>
               </div>
             )}
-
-            <div className="flex flex-col mr-10">
-              <span className="text-xs text-muted-foreground tracking-wide">
-                {translate("resources.deals.fields.stage")}
-              </span>
-              <span className="text-sm">
-                {findDealLabel(dealStages, record.stage)}
-              </span>
-            </div>
           </div>
+
+          <DealLeadDetails record={record} />
 
           {!!record.contact_ids?.length && (
             <div className="m-4">
@@ -199,6 +180,7 @@ const ArchivedTitle = () => {
 
 const ArchiveButton = ({ record }: { record: Deal }) => {
   const translate = useTranslate();
+  const { canAccess } = useCanAccess({ action: "archive", resource: "deals" });
   const [update] = useUpdate();
   const redirect = useRedirect();
   const notify = useNotify();
@@ -229,6 +211,8 @@ const ArchiveButton = ({ record }: { record: Deal }) => {
     );
   };
 
+  if (!canAccess) return null;
+
   return (
     <Button
       onClick={handleClick}
@@ -244,6 +228,7 @@ const ArchiveButton = ({ record }: { record: Deal }) => {
 
 const UnarchiveButton = ({ record }: { record: Deal }) => {
   const translate = useTranslate();
+  const { canAccess } = useCanAccess({ action: "archive", resource: "deals" });
   const dataProvider = useDataProvider();
   const redirect = useRedirect();
   const notify = useNotify();
@@ -269,6 +254,8 @@ const UnarchiveButton = ({ record }: { record: Deal }) => {
   const handleClick = () => {
     mutate();
   };
+
+  if (!canAccess) return null;
 
   return (
     <Button

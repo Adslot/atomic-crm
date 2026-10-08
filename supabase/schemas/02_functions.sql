@@ -84,6 +84,13 @@ exception
 end;
 $$;
 
+CREATE OR REPLACE FUNCTION "public"."current_sales_id"() RETURNS bigint
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+  select id from public.sales where user_id = auth.uid();
+$$;
+
 CREATE OR REPLACE FUNCTION "public"."get_domain_favicon"("domain_name" "text") RETURNS "text"
     LANGUAGE "plpgsql"
     SET "search_path" TO 'public'
@@ -410,6 +417,8 @@ BEGIN
     email_jsonb = merged_emails,
     phone_jsonb = merged_phones,
     linkedin_url = COALESCE(winner_contact.linkedin_url, loser_contact.linkedin_url),
+    postcode = COALESCE(winner_contact.postcode, loser_contact.postcode),
+    region = COALESCE(winner_contact.region, loser_contact.region),
     background = COALESCE(winner_contact.background, loser_contact.background),
     has_newsletter = COALESCE(winner_contact.has_newsletter, loser_contact.has_newsletter),
     first_seen = LEAST(COALESCE(winner_contact.first_seen, loser_contact.first_seen), COALESCE(loser_contact.first_seen, winner_contact.first_seen)),

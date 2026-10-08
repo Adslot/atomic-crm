@@ -82,6 +82,8 @@ export const englishCrmMessages = {
         phone_jsonb: "Phone numbers",
         phone_number: "Phone number",
         linkedin_url: "LinkedIn URL",
+        postcode: "Postcode",
+        region: "Region",
         background: "Background info (bio, how you met, etc)",
         has_newsletter: "Has newsletter",
         sales_id: "Account manager",
@@ -182,10 +184,16 @@ export const englishCrmMessages = {
         description: "Description",
         company_id: "Company",
         contact_ids: "Contacts",
-        category: "Category",
+        category: "Lead Source",
         amount: "Budget",
         expected_closing_date: "Expected closing date",
-        stage: "Stage",
+        business_identifier: "Business Identifier",
+        enquiry_type: "Enquiry Type",
+        value_band: "Value Band",
+        lead_quality: "Lead Quality",
+        sales_id: "Account manager",
+        created_at: "Received At",
+        stage: "Status",
       },
       action: {
         back_to_deal: "Back to deal",
@@ -193,10 +201,11 @@ export const englishCrmMessages = {
         new: "New Deal",
       },
       field_categories: {
+        lead: "Lead",
         misc: "Misc",
       },
       filters: {
-        only_mine: "Only deals I manage",
+        no_account_manager: "No account manager",
       },
       archived: {
         action: "Archive",
@@ -496,12 +505,12 @@ export const englishCrmMessages = {
       },
       dark_mode_logo: "Dark Mode Logo",
       deals: {
-        categories: "Categories",
+        categories: "Lead Sources",
         currency: "Currency",
         pipeline_help:
-          "Select which deal stages should count as pipeline deals.",
+          "Select which deal statuses should count as pipeline deals.",
         pipeline_statuses: "Pipeline Statuses",
-        stages: "Stages",
+        stages: "Statuses",
       },
       light_mode_logo: "Light Mode Logo",
       notes: {
@@ -526,8 +535,8 @@ export const englishCrmMessages = {
           "Cannot remove %{display_name} that are still used by deals: %{items}",
         validating: "Validating\u2026",
         entities: {
-          categories: "categories",
-          stages: "stages",
+          categories: "lead sources",
+          stages: "statuses",
         },
       },
     },

@@ -11,19 +11,20 @@ describe("DealList", () => {
     page.viewport(1600, 900);
   });
 
-  it("lets an admin filter the board by account manager instead of only-mine", async () => {
+  it("lets an admin filter the board by the deal account manager", async () => {
     const screen = await render(<AdminAccountManagerFilter />);
 
     await expect.element(screen.getByText("Jane deal")).toBeVisible();
     await expect.element(screen.getByText("Marie deal")).toBeVisible();
-    await expect
-      .element(screen.getByText("Only deals I manage"))
-      .not.toBeInTheDocument();
 
     await screen.getByRole("combobox", { name: "Account manager" }).click();
     await screen.getByRole("option", { name: "Marie Curie" }).click();
 
+    await expect.element(screen.getByText("Marie deal")).toBeVisible();
     await expect.element(screen.getByText("Jane deal")).not.toBeInTheDocument();
+    await expect
+      .element(screen.getByText("Unassigned deal"))
+      .not.toBeInTheDocument();
 
     const clearButton = screen.getByRole("button", { name: "Clear value" });
     await clearButton.element().focus();
@@ -33,10 +34,24 @@ describe("DealList", () => {
     await expect.element(screen.getByText("Marie deal")).toBeVisible();
   });
 
-  it("keeps the only-mine switch for a user who is not an admin", async () => {
+  it("lets an admin show only deals without an account manager", async () => {
+    const screen = await render(<AdminAccountManagerFilter />);
+
+    await screen.getByRole("combobox", { name: "Account manager" }).click();
+    await screen.getByRole("option", { name: "No account manager" }).click();
+
+    await expect.element(screen.getByText("Unassigned deal")).toBeVisible();
+    await expect.element(screen.getByText("Jane deal")).not.toBeInTheDocument();
+    await expect
+      .element(screen.getByText("Marie deal"))
+      .not.toBeInTheDocument();
+  });
+
+  it("offers no account manager filter to a user who is not an admin", async () => {
     const screen = await render(<NonAdminAccountManagerFilter />);
 
-    await expect.element(screen.getByText("Only deals I manage")).toBeVisible();
+    await expect.element(screen.getByText("Jane deal")).toBeVisible();
+    await expect.element(screen.getByRole("switch")).not.toBeInTheDocument();
     await expect
       .element(screen.getByRole("combobox", { name: "Account manager" }))
       .not.toBeInTheDocument();

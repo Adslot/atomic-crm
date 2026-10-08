@@ -1,3 +1,3 @@
-name,company,category,stage,amount,expected_closing_date,description
-New website,Acme,Website design,Opportunity,12000,2026-09-30,Redesign of the public website
-Print campaign,Globex,Print project,Proposal Sent,4500,2026-10-15,
+name,company,category,stage,amount,expected_closing_date,description,business_identifier,enquiry_type,value_band,lead_quality
+New website,Acme,Website design,Opportunity,12000,2026-09-30,Redesign of the public website,51 824 753 556,"Website, Referral",Sale $10k+,Excellent
+Print campaign,Globex,Print project,Proposal Sent,4500,2026-10-15,,,,,

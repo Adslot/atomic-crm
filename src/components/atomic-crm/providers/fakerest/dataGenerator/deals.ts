@@ -8,6 +8,8 @@ import {
 import type { Deal } from "../../../types";
 import type { Db } from "./types";
 import { randomDate } from "./utils";
+import { dealValueBands } from "../../../deals/dealValueBands";
+import { dealLeadQualities } from "../../../deals/dealLeadQualities";
 
 export const generateDeals = (db: Db): Deal[] => {
   const deals = Array.from(Array(50).keys()).map((id) => {
@@ -41,6 +43,14 @@ export const generateDeals = (db: Db): Deal[] => {
       expected_closing_date,
       sales_id: company.sales_id!,
       index: 0,
+      business_identifier: company.tax_identifier,
+      enquiry_type: random.arrayElements([
+        "Inbound call",
+        "Web form",
+        "Referral",
+      ]),
+      value_band: random.arrayElement(dealValueBands).value,
+      lead_quality: random.arrayElement(dealLeadQualities).value,
     };
   });
   // compute index based on stage

@@ -85,6 +85,8 @@ export const frenchCrmMessages = {
         phone_jsonb: "Numéros de téléphone",
         phone_number: "Numéro de téléphone",
         linkedin_url: "URL LinkedIn",
+        postcode: "Code postal",
+        region: "Région",
         background: "Informations de contexte",
         has_newsletter: "Abonné à la newsletter",
         sales_id: "Responsable de compte",
@@ -186,10 +188,16 @@ export const frenchCrmMessages = {
         description: "Description",
         company_id: "Entreprise",
         contact_ids: "Contacts",
-        category: "Catégorie",
+        category: "Source du prospect",
         amount: "Budget",
         expected_closing_date: "Date de clôture prévue",
-        stage: "Étape",
+        business_identifier: "Identifiant d'entreprise",
+        enquiry_type: "Type de demande",
+        value_band: "Tranche de valeur",
+        lead_quality: "Qualité du prospect",
+        sales_id: "Responsable de compte",
+        created_at: "Reçue le",
+        stage: "Statut",
       },
       action: {
         back_to_deal: "Retour à l'affaire",
@@ -197,10 +205,11 @@ export const frenchCrmMessages = {
         new: "Nouvelle affaire",
       },
       field_categories: {
+        lead: "Prospect",
         misc: "Divers",
       },
       filters: {
-        only_mine: "Seulement les affaires que je gère",
+        no_account_manager: "Sans responsable de compte",
       },
       archived: {
         action: "Archiver",
@@ -503,12 +512,12 @@ export const frenchCrmMessages = {
       },
       dark_mode_logo: "Logo du mode sombre",
       deals: {
-        categories: "Catégories",
+        categories: "Sources de prospects",
         currency: "Devise",
         pipeline_help:
-          "Sélectionnez les étapes d'affaire à considérer comme des affaires dans le pipeline.",
+          "Sélectionnez les statuts d'affaire à considérer comme des affaires dans le pipeline.",
         pipeline_statuses: "Statuts des pipelines",
-        stages: "Étapes",
+        stages: "Statuts",
       },
       light_mode_logo: "Logo du mode clair",
       notes: {
@@ -533,8 +542,8 @@ export const frenchCrmMessages = {
           "Impossible de supprimer %{display_name} encore utilisés par des affaires : %{items}",
         validating: "Validation\u2026",
         entities: {
-          categories: "catégories",
-          stages: "étapes",
+          categories: "sources de prospects",
+          stages: "statuts",
         },
       },
     },

@@ -27,5 +27,21 @@ export const canAccess = <
     return false;
   }
 
+  // Non admins can't edit deals (beyond the quick edit in the deal modal) or archive them
+  if (
+    params.resource === "deals" &&
+    (params.action === "edit" || params.action === "archive")
+  ) {
+    return false;
+  }
+
+  // Non admins can't delete contacts, companies or deals
+  if (
+    params.action === "delete" &&
+    ["contacts", "companies", "deals"].includes(params.resource)
+  ) {
+    return false;
+  }
+
   return true;
 };

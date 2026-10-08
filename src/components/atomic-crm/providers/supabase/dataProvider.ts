@@ -17,6 +17,7 @@ import type {
 } from "../../types";
 import type { ConfigurationContextValue } from "../../root/ConfigurationContext";
 import { ATTACHMENTS_BUCKET } from "../commons/attachments";
+import { toDealSalesFilter } from "../commons/dealSalesFilter";
 import { getIsInitialized } from "./authProvider";
 import { getSupabaseClient } from "./supabase";
 
@@ -376,7 +377,10 @@ const lifeCycleCallbacks: ResourceCallbacks[] = [
   {
     resource: "deals",
     beforeGetList: async (params) => {
-      return applyFullTextSearch(["name", "category", "description"])(params);
+      return applyFullTextSearch(["name", "category", "description"])({
+        ...params,
+        filter: toDealSalesFilter(params.filter),
+      });
     },
   },
 ];
