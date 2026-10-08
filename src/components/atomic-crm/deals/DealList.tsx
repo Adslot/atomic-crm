@@ -26,7 +26,6 @@ import { DealEmpty } from "./DealEmpty";
 import { DealListContent } from "./DealListContent";
 import { DealShow } from "./DealShow";
 import { DealAccountManagerInput } from "./DealAccountManagerInput";
-import { OnlyMineInput } from "./OnlyMineInput";
 
 const DealList = () => {
   const { identity } = useGetIdentity();
@@ -57,15 +56,10 @@ const DealList = () => {
         optionValue="value"
       />
     </WrapperField>,
-    ...(isPending
-      ? []
-      : [
-          canAccessSalesList ? (
-            <DealAccountManagerInput source="sales_id" alwaysOn />
-          ) : (
-            <OnlyMineInput source="sales_id" alwaysOn />
-          ),
-        ]),
+    // Non-admins only see their own deals, so only admins filter by account manager
+    ...(!isPending && canAccessSalesList
+      ? [<DealAccountManagerInput source="sales_id" alwaysOn />]
+      : []),
   ];
 
   return (

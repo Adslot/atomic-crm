@@ -16,7 +16,8 @@ alter table public.configuration enable row level security;
 alter table public.favicons_excluded_domains enable row level security;
 
 -- Companies
-create policy "Enable read access for authenticated users" on public.companies for select to authenticated using (true);
+-- Non-admins only see the companies they own (e.g. created), of the deals they manage, and of the contacts they can see
+create policy "Enable read access for authenticated users" on public.companies for select to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id()) or exists (select 1 from public.deals d where d.company_id = companies.id and d.sales_id = (select public.current_sales_id())) or exists (select 1 from public.contacts co where co.company_id = companies.id));
 create policy "Enable insert for authenticated users only" on public.companies for insert to authenticated with check (true);
 create policy "Enable update for authenticated users only" on public.companies for update to authenticated using (true) with check (true);
 create policy "Company Delete Policy" on public.companies for delete to authenticated using (true);

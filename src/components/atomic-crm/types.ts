@@ -128,7 +128,7 @@ export type Deal = {
   updated_at: string;
   archived_at?: string;
   expected_closing_date: string | null;
-  sales_id: Identifier;
+  sales_id?: Identifier | null;
   index: number;
   business_identifier?: string | null;
   enquiry_type?: string[] | null;

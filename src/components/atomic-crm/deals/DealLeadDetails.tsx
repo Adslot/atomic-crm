@@ -1,13 +1,22 @@
-import { Form, required, useNotify, useTranslate, useUpdate } from "ra-core";
+import {
+  Form,
+  required,
+  useCanAccess,
+  useGetOne,
+  useNotify,
+  useTranslate,
+  useUpdate,
+} from "ra-core";
 import type { ReactNode } from "react";
 import { useFormState } from "react-hook-form";
 import { Save } from "lucide-react";
 import { NumberInput } from "@/components/admin/number-input";
+import { ReferenceInput } from "@/components/admin/reference-input";
 import { SelectInput } from "@/components/admin/select-input";
 import { Button } from "@/components/ui/button";
 
 import { useConfigurationContext } from "../root/ConfigurationContext";
-import type { Deal } from "../types";
+import type { Deal, Sale } from "../types";
 import { findDealLabel } from "./dealUtils";
 import { dealLeadQualities } from "./dealLeadQualities";
 import { dealValueBands } from "./dealValueBands";
@@ -16,19 +25,24 @@ const EMPTY_VALUE = "—";
 
 type QuickEditValues = Pick<
   Deal,
-  "stage" | "amount" | "value_band" | "lead_quality"
+  "stage" | "amount" | "value_band" | "lead_quality" | "sales_id"
 >;
 
 /**
  * The lead fields of a deal, always displayed so missing values stand out.
  * Every user can quick-edit the status, budget, value band and lead quality
- * here, even when they cannot open the full edit form.
+ * here, even when they cannot open the full edit form; admins can also
+ * reassign the account manager.
  */
 export const DealLeadDetails = ({ record }: { record: Deal }) => {
   const translate = useTranslate();
   const notify = useNotify();
   const { dealCategories, dealStages } = useConfigurationContext();
   const [update, { isPending }] = useUpdate<Deal>();
+  const { canAccess: canAssign } = useCanAccess({
+    resource: "sales",
+    action: "list",
+  });
 
   const handleSubmit = (values: Partial<Deal>) => {
     const data: QuickEditValues = {
@@ -36,6 +50,7 @@ export const DealLeadDetails = ({ record }: { record: Deal }) => {
       amount: values.amount ?? null,
       value_band: values.value_band ?? null,
       lead_quality: values.lead_quality ?? null,
+      ...(canAssign ? { sales_id: values.sales_id ?? null } : {}),
     };
     update(
       "deals",
@@ -54,6 +69,22 @@ export const DealLeadDetails = ({ record }: { record: Deal }) => {
       </h3>
       <Form record={record} onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-3 items-start">
+          {canAssign ? (
+            <ReferenceInput
+              source="sales_id"
+              reference="sales"
+              sort={{ field: "last_name", order: "ASC" }}
+              filter={{ "disabled@neq": true }}
+            >
+              <SelectInput
+                label="resources.deals.fields.sales_id"
+                optionText={saleName}
+                helperText={false}
+              />
+            </ReferenceInput>
+          ) : (
+            <AccountManagerDetail salesId={record.sales_id} />
+          )}
           <SelectInput
             source="stage"
             choices={dealStages}
@@ -101,6 +132,22 @@ export const DealLeadDetails = ({ record }: { record: Deal }) => {
         </div>
       </Form>
     </div>
+  );
+};
+
+const saleName = (sale: Sale) => `${sale.first_name} ${sale.last_name}`;
+
+const AccountManagerDetail = ({ salesId }: { salesId?: Deal["sales_id"] }) => {
+  const translate = useTranslate();
+  const { data: sale } = useGetOne<Sale>(
+    "sales",
+    { id: salesId! },
+    { enabled: salesId != null },
+  );
+  return (
+    <ReadOnlyDetail label={translate("resources.deals.fields.sales_id")}>
+      {salesId != null && sale ? saleName(sale) : null}
+    </ReadOnlyDetail>
   );
 };
 

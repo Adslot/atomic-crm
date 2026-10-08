@@ -6,18 +6,25 @@ import {
 import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
 
-import { buildContact, buildDeal, StoryWrapper } from "@/test/StoryWrapper";
+import {
+  buildContact,
+  buildDeal,
+  buildSale,
+  StoryWrapper,
+} from "@/test/StoryWrapper";
 import { canAccess } from "../providers/commons/canAccess";
-import type { Contact, Deal } from "../types";
+import type { Contact, Deal, Sale } from "../types";
 import { DealShow } from "./DealShow";
 
 const renderDealShow = ({
   deal,
   contacts = [],
+  sales,
   role = "admin",
 }: {
   deal: Deal;
   contacts?: Contact[];
+  sales?: Sale[];
   role?: "admin" | "user";
 }) => {
   let dataProvider: DataProvider | null = null;
@@ -27,7 +34,7 @@ const renderDealShow = ({
   };
   const result = render(
     <StoryWrapper
-      data={{ deals: [deal], contacts }}
+      data={{ deals: [deal], contacts, ...(sales ? { sales } : {}) }}
       authProvider={{ canAccess: async (params) => canAccess(role, params) }}
     >
       <DataProviderListener />
@@ -119,6 +126,58 @@ describe("DealShow", () => {
       .toEqual({ amount: 2500, lead_quality: "average" });
   });
 
+  describe("account manager", () => {
+    const sales = [
+      buildSale({ id: 0, first_name: "Jane", last_name: "Doe" }),
+      buildSale({
+        id: 1,
+        administrator: false,
+        email: "mariecurie@atomic.dev",
+        first_name: "Marie",
+        last_name: "Curie",
+        user_id: "1",
+      }),
+    ];
+
+    it("lets an admin reassign the deal account manager from the modal", async () => {
+      // Arrange
+      const deal = buildDeal({ sales_id: 0 });
+      const { result, getDataProvider } = renderDealShow({ deal, sales });
+      const screen = await result;
+
+      // Act
+      const accountManager = screen.getByRole("combobox", {
+        name: "Account manager",
+      });
+      await expect.element(accountManager).toHaveTextContent("Jane Doe");
+      await accountManager.click();
+      await screen.getByRole("option", { name: "Marie Curie" }).click();
+      await screen.getByRole("button", { name: "Save" }).click();
+
+      // Assert
+      await expect
+        .poll(async () => {
+          const { data } = await getDataProvider().getOne<Deal>("deals", {
+            id: deal.id,
+          });
+          return data.sales_id;
+        })
+        .toBe(1);
+    });
+
+    it("shows the account manager read-only to a non-admin", async () => {
+      // Arrange / Act
+      const deal = buildDeal({ sales_id: 1 });
+      const screen = await renderDealShow({ deal, sales, role: "user" }).result;
+
+      // Assert
+      await expect.element(screen.getByText("Marie Curie")).toBeVisible();
+      await expect
+        .element(screen.getByRole("combobox", { name: "Account manager" }))
+        .not.toBeInTheDocument();
+    });
+  });
+
   it("hides the full edit and archive actions from a non-admin", async () => {
     // Arrange / Act
     const screen = await renderDealShow({ deal: buildDeal(), role: "user" })
@@ -147,6 +206,33 @@ describe("DealShow", () => {
       .toBeVisible();
   });
 
+  it("shows a non-admin the deal contacts without a link to the contact page", async () => {
+    // Arrange
+    const contact = buildContact({
+      id: 7,
+      first_name: "Grace",
+      last_name: "Hopper",
+      email_jsonb: [{ email: "grace@example.com", type: "Work" }],
+    });
+    const deal = buildDeal({ contact_ids: [contact.id] });
+
+    // Act
+    const screen = await renderDealShow({
+      deal,
+      contacts: [contact],
+      role: "user",
+    }).result;
+
+    // Assert
+    await expect.element(screen.getByText("Grace Hopper")).toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: "grace@example.com" }))
+      .toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: "Grace Hopper" }))
+      .not.toBeInTheDocument();
+  });
+
   it("shows the contact details of the deal contacts", async () => {
     // Arrange
     const contact = buildContact({
@@ -167,7 +253,9 @@ describe("DealShow", () => {
     const screen = await renderDealShow({ deal, contacts: [contact] }).result;
 
     // Assert
-    await expect.element(screen.getByText("Grace Hopper")).toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: "Grace Hopper" }))
+      .toHaveAttribute("href", expect.stringContaining("/contacts/7/show"));
     await expect
       .element(screen.getByRole("link", { name: "grace@example.com" }))
       .toHaveAttribute("href", "mailto:grace@example.com");

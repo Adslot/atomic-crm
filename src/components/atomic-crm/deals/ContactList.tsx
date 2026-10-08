@@ -1,4 +1,4 @@
-import { useListContext, useTranslate } from "ra-core";
+import { useCanAccess, useListContext, useTranslate } from "ra-core";
 import { Mail, MapPin, Phone } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link as RouterLink } from "react-router";
@@ -9,6 +9,11 @@ import type { Contact } from "../types";
 export const ContactList = () => {
   const { data, error, isPending } = useListContext<Contact>();
   const translate = useTranslate();
+  // Only admins get a link to the contact page; non-admins just see the details
+  const { canAccess: canOpenContact } = useCanAccess({
+    resource: "sales",
+    action: "list",
+  });
   if (isPending || error) return <div className="h-8" />;
   return (
     <div className="flex flex-row flex-wrap gap-x-8 gap-y-4 mt-4">
@@ -16,12 +21,18 @@ export const ContactList = () => {
         <div className="flex flex-row gap-4 items-start" key={contact.id}>
           <Avatar record={contact} />
           <div className="flex flex-col">
-            <RouterLink
-              to={`/contacts/${contact.id}/show`}
-              className="text-sm hover:underline"
-            >
-              {contact.first_name} {contact.last_name}
-            </RouterLink>
+            {canOpenContact ? (
+              <RouterLink
+                to={`/contacts/${contact.id}/show`}
+                className="text-sm hover:underline"
+              >
+                {contact.first_name} {contact.last_name}
+              </RouterLink>
+            ) : (
+              <span className="text-sm">
+                {contact.first_name} {contact.last_name}
+              </span>
+            )}
             <span className="text-xs text-muted-foreground">
               {contact.title && contact.company_name
                 ? translate("resources.contacts.position_at_company", {

@@ -181,9 +181,10 @@ export const SelectInput = (props: SelectInputProps) => {
       if (value === emptyValue) {
         field.onChange(emptyValue);
       } else {
-        // Find the choice by value and pass it to field.onChange
+        // Find the choice by value and pass it to field.onChange. Radix Select
+        // values are strings, so compare as strings to keep numeric ids numeric.
         const choice = allChoices?.find(
-          (choice) => getChoiceValue(choice) === value,
+          (choice) => getChoiceValue(choice)?.toString() === value,
         );
         field.onChange(choice ? getChoiceValue(choice) : value);
       }

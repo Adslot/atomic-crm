@@ -209,7 +209,6 @@ export const frenchCrmMessages = {
         misc: "Divers",
       },
       filters: {
-        only_mine: "Seulement les affaires que je gère",
         no_account_manager: "Sans responsable de compte",
       },
       archived: {
