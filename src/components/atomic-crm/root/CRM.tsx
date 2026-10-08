@@ -17,7 +17,6 @@ import { OAuthConsentPage } from "@/components/supabase/oauth-consent-page";
 
 import companies from "../companies";
 import contacts from "../contacts";
-import { Dashboard } from "../dashboard/Dashboard";
 import { MobileDashboard } from "../dashboard/MobileDashboard";
 import deals from "../deals";
 import { Layout } from "../layout/Layout";
@@ -239,7 +238,9 @@ const DesktopAdmin = (
   return (
     <Admin
       layout={props.layout ?? Layout}
-      dashboard={props.dashboard ?? Dashboard}
+      // No dashboard by default: "/" (where login lands) redirects to the first
+      // resource, the deals page
+      dashboard={props.dashboard}
       {...props}
     >
       <CustomRoutes noLayout>
