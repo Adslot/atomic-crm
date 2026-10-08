@@ -191,6 +191,7 @@ export const englishCrmMessages = {
         enquiry_type: "Enquiry Type",
         value_band: "Value Band",
         lead_quality: "Lead Quality",
+        sales_id: "Account manager",
         created_at: "Received At",
         stage: "Status",
       },

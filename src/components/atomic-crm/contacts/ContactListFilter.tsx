@@ -1,11 +1,6 @@
 import { endOfYesterday, startOfMonth, startOfWeek, subMonths } from "date-fns";
-import { CheckSquare, Clock, Tag, TrendingUp, Users } from "lucide-react";
-import {
-  useGetIdentity,
-  useGetList,
-  useListContext,
-  useTranslate,
-} from "ra-core";
+import { CheckSquare, Clock, Tag, TrendingUp } from "lucide-react";
+import { useGetList, useListContext, useTranslate } from "ra-core";
 import { ToggleFilterButton } from "@/components/admin/toggle-filter-button";
 import { Badge } from "@/components/ui/badge";
 
@@ -15,12 +10,10 @@ import { useConfigurationContext } from "../root/ConfigurationContext";
 import { ResponsiveFilters } from "../misc/ResponsiveFilters";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ActiveFilterButton } from "../misc/ActiveFilterButton";
-import { AccountManagerFilter } from "../sales/AccountManagerInput";
 
 export const ContactListFilter = () => {
   const { noteStatuses } = useConfigurationContext();
   const isMobile = useIsMobile();
-  const { identity } = useGetIdentity();
   const translate = useTranslate();
   const { data } = useGetList("tags", {
     pagination: { page: 1, perPage: 10 },
@@ -140,29 +133,12 @@ export const ContactListFilter = () => {
           size={isMobile ? "lg" : undefined}
         />
       </FilterCategory>
-
-      <FilterCategory
-        icon={<Users />}
-        label="resources.contacts.fields.sales_id"
-      >
-        <ToggleFilterButton
-          className="w-auto md:w-full max-w-full justify-between h-10 md:h-8"
-          label="crm.common.me"
-          value={{ sales_id: identity?.id }}
-          size={isMobile ? "lg" : undefined}
-        />
-        <AccountManagerFilter
-          className="w-auto md:w-full max-w-full justify-between h-10 md:h-8"
-          size={isMobile ? "lg" : undefined}
-        />
-      </FilterCategory>
     </ResponsiveFilters>
   );
 };
 
 export const ContactListFilterSummary = () => {
   const { noteStatuses } = useConfigurationContext();
-  const { identity } = useGetIdentity();
   const { data } = useGetList("tags", {
     pagination: { page: 1, perPage: 10 },
     sort: { field: "name", order: "ASC" },
@@ -256,12 +232,6 @@ export const ContactListFilterSummary = () => {
         className="w-auto justify-between h-8"
         label="resources.tasks.filters.with_pending"
         value={{ "nb_tasks@gt": 0 }}
-      />
-
-      <ActiveFilterButton
-        className="w-auto justify-between h-8"
-        label="resources.contacts.filters.managed_by_me"
-        value={{ sales_id: identity?.id }}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { required, useTranslate } from "ra-core";
+import { required, useCanAccess, useTranslate } from "ra-core";
 import { AutocompleteArrayInput } from "@/components/admin/autocomplete-array-input";
 import { ReferenceArrayInput } from "@/components/admin/reference-array-input";
 import { ReferenceInput } from "@/components/admin/reference-input";
@@ -13,6 +13,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { contactOptionText } from "../misc/ContactOption";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { AutocompleteCompanyInput } from "../companies/AutocompleteCompanyInput.tsx";
+import type { Sale } from "../types";
 import { dealValueBands } from "./dealValueBands";
 import { dealLeadQualities } from "./dealLeadQualities";
 
@@ -42,6 +43,11 @@ const DealInfoInputs = () => {
 
 const DealLinkedToInputs = () => {
   const translate = useTranslate();
+  // Only admins assign deals; a deal created by someone else defaults to its creator
+  const { canAccess: canAssign } = useCanAccess({
+    resource: "sales",
+    action: "list",
+  });
   return (
     <div className="flex flex-col gap-4 flex-1">
       <h3 className="text-base font-medium">
@@ -62,9 +68,27 @@ const DealLinkedToInputs = () => {
           helperText={false}
         />
       </ReferenceArrayInput>
+
+      {canAssign && (
+        <ReferenceInput
+          source="sales_id"
+          reference="sales"
+          sort={{ field: "last_name", order: "ASC" }}
+          filter={{ "disabled@neq": true }}
+        >
+          <SelectInput
+            label="resources.deals.fields.sales_id"
+            optionText={saleOptionRenderer}
+            helperText={false}
+          />
+        </ReferenceInput>
+      )}
     </div>
   );
 };
+
+const saleOptionRenderer = (choice: Sale) =>
+  `${choice.first_name} ${choice.last_name}`;
 
 const DealMiscInputs = () => {
   const { dealStages, dealCategories } = useConfigurationContext();

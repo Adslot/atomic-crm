@@ -40,6 +40,8 @@ export const ContactList = () => {
 
   return (
     <List
+      // New store key: drops account manager filters saved before that filter was removed
+      storeKey="contacts.list"
       title={false}
       actions={<ContactListActions />}
       perPage={25}
@@ -99,6 +101,8 @@ export const ContactListMobile = () => {
 
   return (
     <InfiniteListBase
+      // New store key: drops account manager filters saved before that filter was removed
+      storeKey="contacts.list"
       perPage={25}
       sort={{ field: "last_seen", order: "DESC" }}
       exporter={exporter}

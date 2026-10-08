@@ -22,11 +22,11 @@ create policy "Enable update for authenticated users only" on public.companies f
 create policy "Company Delete Policy" on public.companies for delete to authenticated using (true);
 
 -- Contacts
--- Non-admins only see the contacts they manage
-create policy "Enable read access for authenticated users" on public.contacts for select to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id()));
+-- Non-admins only see the contacts of the deals they manage, and the contacts they own (e.g. created)
+create policy "Enable read access for authenticated users" on public.contacts for select to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id()) or exists (select 1 from public.deals d where d.sales_id = (select public.current_sales_id()) and contacts.id = any(d.contact_ids)));
 create policy "Enable insert for authenticated users only" on public.contacts for insert to authenticated with check (true);
--- Non-admins can only update their own contacts, and cannot reassign them to another account manager
-create policy "Enable update for authenticated users only" on public.contacts for update to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id())) with check ((select public.is_admin()) or sales_id = (select public.current_sales_id()));
+-- Non-admins can only update the contacts they can see
+create policy "Enable update for authenticated users only" on public.contacts for update to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id()) or exists (select 1 from public.deals d where d.sales_id = (select public.current_sales_id()) and contacts.id = any(d.contact_ids))) with check ((select public.is_admin()) or sales_id = (select public.current_sales_id()) or exists (select 1 from public.deals d where d.sales_id = (select public.current_sales_id()) and contacts.id = any(d.contact_ids)));
 create policy "Contact Delete Policy" on public.contacts for delete to authenticated using (true);
 
 -- Contact Notes
@@ -37,8 +37,8 @@ create policy "Contact Notes Update policy" on public.contact_notes for update t
 create policy "Contact Notes Delete Policy" on public.contact_notes for delete to authenticated using (true);
 
 -- Deals
--- Non-admins only see the deals they manage or that involve a contact they can see
-create policy "Enable read access for authenticated users" on public.deals for select to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id()) or exists (select 1 from public.contacts co where co.id = any(deals.contact_ids)));
+-- Non-admins only see the deals they are the account manager of
+create policy "Enable read access for authenticated users" on public.deals for select to authenticated using ((select public.is_admin()) or sales_id = (select public.current_sales_id()));
 create policy "Enable insert for authenticated users only" on public.deals for insert to authenticated with check (true);
 create policy "Enable update for authenticated users only" on public.deals for update to authenticated using (true) with check (true);
 create policy "Deals Delete Policy" on public.deals for delete to authenticated using (true);

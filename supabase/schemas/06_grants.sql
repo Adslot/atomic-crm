@@ -49,10 +49,6 @@ grant all on function public.handle_update_user() to anon;
 grant all on function public.handle_update_user() to authenticated;
 grant all on function public.handle_update_user() to service_role;
 
-grant all on function public.contact_sales_ids(public.deals) to anon;
-grant all on function public.contact_sales_ids(public.deals) to authenticated;
-grant all on function public.contact_sales_ids(public.deals) to service_role;
-
 grant all on function public.current_sales_id() to anon;
 grant all on function public.current_sales_id() to authenticated;
 grant all on function public.current_sales_id() to service_role;

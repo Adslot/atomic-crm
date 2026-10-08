@@ -16,6 +16,8 @@ export const CompanyList = () => {
   if (!identity) return null;
   return (
     <List
+      // New store key: drops account manager filters saved before that filter was removed
+      storeKey="companies.list"
       title={false}
       perPage={25}
       sort={{ field: "name", order: "ASC" }}

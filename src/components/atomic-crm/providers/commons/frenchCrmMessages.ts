@@ -195,6 +195,7 @@ export const frenchCrmMessages = {
         enquiry_type: "Type de demande",
         value_band: "Tranche de valeur",
         lead_quality: "Qualité du prospect",
+        sales_id: "Responsable de compte",
         created_at: "Reçue le",
         stage: "Statut",
       },

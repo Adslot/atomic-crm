@@ -2,12 +2,12 @@ import { useGetList, useTranslate } from "ra-core";
 import { AutocompleteInput } from "@/components/admin/autocomplete-input";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-import { NO_ACCOUNT_MANAGER } from "../providers/commons/dealContactSalesFilter";
+import { NO_ACCOUNT_MANAGER } from "../providers/commons/dealSalesFilter";
 import type { Sale } from "../types";
 
 /**
- * Filters deals by the account manager of their contacts, with an extra
- * option for deals none of whose contacts has an account manager.
+ * Filters deals by their account manager, with an extra option for deals
+ * that have no account manager.
  */
 export const DealAccountManagerInput = ({
   source,
